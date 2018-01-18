@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Potato", "Potato.csproj", "{22FE8D80-E8A9-FD65-0842-70F27E9DC816}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Potato.Editor", "Potato.Editor.csproj", "{C1E75E65-9B33-33A7-B0D0-66E3495C7B32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{22FE8D80-E8A9-FD65-0842-70F27E9DC816}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22FE8D80-E8A9-FD65-0842-70F27E9DC816}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22FE8D80-E8A9-FD65-0842-70F27E9DC816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1E75E65-9B33-33A7-B0D0-66E3495C7B32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1E75E65-9B33-33A7-B0D0-66E3495C7B32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1E75E65-9B33-33A7-B0D0-66E3495C7B32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1E75E65-9B33-33A7-B0D0-66E3495C7B32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

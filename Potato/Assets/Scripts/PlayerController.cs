@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour {
     public string leftKey = "left";
     public string rightKey = "right";
 
-    public float jumpSpeed = 4.8f;
+    public float jumpSpeed = 5f;
     public float rotationSpeed = 4.2f;
     public float acceleration = .2f;
     public float maxVelocityX = 4f;
@@ -32,10 +32,11 @@ public class PlayerController : MonoBehaviour {
     public State state = State.Idle;
     public Direction direction = Direction.Right;
     
-    bool isJumpPressed;
+    bool isJumpPressing;
     bool isLeftPressing;
     bool isRightPressing;
-    bool isAlreadyJumped;
+    bool isOnGround;
+    bool isAgainstSides;
 
     Rigidbody2D rb2d;
     float scaleX;
@@ -48,21 +49,20 @@ public class PlayerController : MonoBehaviour {
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         scaleX = transform.localScale.x;
         scaleY = transform.localScale.y;
-        angularDrag = rb2d.angularDrag;
-
+        angularDrag = rb2d.angularDrag;        
         animator = gameObject.GetComponent<Animator>();        
     }
 
     // Update is called once per frame
     void Update () {
 
-        isJumpPressed = Input.GetKey(jumpKey);
+        isJumpPressing = Input.GetKey(jumpKey);
         isLeftPressing = Input.GetKey(leftKey);
         isRightPressing = Input.GetKey(rightKey);
 
         // flip player when facing other direction
         transform.localScale = new Vector3(scaleX * (int)direction, scaleY);
-
+        
         animator.SetInteger("State", (int)state);
     }
     
@@ -70,71 +70,86 @@ public class PlayerController : MonoBehaviour {
     {
         rb2d.velocity = new Vector2(Mathf.Sign(rb2d.velocity.x) * Mathf.Min(Mathf.Abs(rb2d.velocity.x), maxVelocityX),
             Mathf.Sign(rb2d.velocity.y) * Mathf.Min(Mathf.Abs(rb2d.velocity.y), maxVelocityY));
+
+        isOnGround = IsOnGround();
+        isAgainstSides = IsAgainstSides();
         
-        var onGround = IsOnGround();
-
-        if (onGround)
-            isAlreadyJumped = false;
-
-        if (state == State.Idle && !onGround)
+        if (state == State.Idle && !isOnGround)
             state = State.Jump;
 
-        if (state == State.Jump && onGround)
+        if (state == State.Jump && isOnGround)
             state = State.Idle;
-
-        /*if (onGround)
+        
+        if (isJumpPressing)
         {
-            rb2d.angularDrag = angularDrag;
-        } else
-        {
-            if (!isLeftPressing && !isRightPressing)
-                rb2d.angularVelocity *= .5f;
-            rb2d.angularDrag = 0;
-        }*/
-
-        if (isJumpPressed)
-        {
-            if (!isAlreadyJumped)
+            if (isOnGround)
             {
-                isAlreadyJumped = true;
-                rb2d.velocity = new Vector2(rb2d.velocity.x, 0);
-                rb2d.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+                rb2d.velocity = new Vector2(rb2d.velocity.x, jumpSpeed);
             }
         }
         
         if (isLeftPressing)
         {
+            //if (!isAgainstSides)
             rb2d.AddTorque(rotationSpeed);
-            //rb2d.MoveRotation(rb2d.rotation + rotationSpeed);
             if (rb2d.velocity.x < 0.1f) direction = Direction.Left;
 
-            if (!onGround)
+            if (!isOnGround)
             {
-                //rb2d.AddForce(Vector2.left * horizontalSpeed);
                 if (rb2d.velocity.x > -maxJumpVelocityX)
                     rb2d.velocity = new Vector2(rb2d.velocity.x - acceleration, rb2d.velocity.y);
             }
         }
         if (isRightPressing)
         {
+            //if (!isAgainstSides)
             rb2d.AddTorque(-rotationSpeed);
-            //rb2d.MoveRotation(rb2d.rotation - rotationSpeed);
             if (rb2d.velocity.x > 0.1f) direction = Direction.Right;
-            if (!onGround)
+            if (!isOnGround)
             {
-                //rb2d.AddForce(Vector2.right * speed);
-                if (rb2d.velocity.x < maxJumpVelocityX)
+                if (rb2d.velocity.x < maxJumpVelocityX)                    
                     rb2d.velocity = new Vector2(rb2d.velocity.x + acceleration, rb2d.velocity.y);
             }
         }
     }
-
+    
     //////
+
+    bool IsAgainstSides()
+    {
+        var cf = new ContactFilter2D();
+        cf.SetLayerMask(LayerMask.GetMask("BlockLayer"));
+        var pc = GetComponent<PolygonCollider2D>();
+        int h = 0;
+        foreach (Vector2 pcv in pc.points)
+        {
+            Vector3 pcv2world = transform.TransformPoint(pcv);
+            var color = Color.red;
+            if (pcv2world.y > transform.position.y - pc.bounds.size.y * .3
+                && pcv2world.y < transform.position.y + pc.bounds.size.y * .3)
+            {
+                color = Color.yellow;
+                h += Physics2D.Raycast(pcv2world, Vector2.left, cf, new RaycastHit2D[1], 0.1f);
+                h += Physics2D.Raycast(pcv2world, Vector2.right, cf, new RaycastHit2D[1], 0.1f);
+            }
+            Debug.DrawRay(pcv2world, Vector2.left * 0.1f, color);
+            Debug.DrawRay(pcv2world, Vector2.right * 0.1f, color);
+        }
+        return h > 0;
+    }
 
     bool IsOnGround()
     {
-
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.5f, LayerMask.GetMask("BlockLayer"));
-        return (hit.collider != null);
-    }
+        var cf = new ContactFilter2D();
+        cf.SetLayerMask(LayerMask.GetMask("BlockLayer"));
+        var pc = GetComponent<PolygonCollider2D>();
+        int h = 0;
+        foreach (Vector2 pcv in pc.points)
+        {
+            Vector3 pcv2world = transform.TransformPoint(pcv);
+            //Debug.DrawRay(pcv2world, Vector2.down* 0.05f, Color.blue);
+            h += Physics2D.Raycast(pcv2world, Vector2.down, cf, new RaycastHit2D[1], 0.05f);
+        }        
+        return h > 0;
+    }    
 }
