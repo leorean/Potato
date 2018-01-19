@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour {
     public float maxVelocityX = 4f;
     public float maxJumpVelocityX = 2.5f;
     public float maxVelocityY = 5f;
-
+    
     Animator animator;
 
     public enum Direction
@@ -39,6 +39,8 @@ public class PlayerController : MonoBehaviour {
     bool isAgainstSides;
 
     Rigidbody2D rb2d;
+    PhysicsMaterial2D material;
+    float friction;
     float scaleX;
     float scaleY;
     float angularDrag;
@@ -49,8 +51,10 @@ public class PlayerController : MonoBehaviour {
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         scaleX = transform.localScale.x;
         scaleY = transform.localScale.y;
-        angularDrag = rb2d.angularDrag;        
-        animator = gameObject.GetComponent<Animator>();        
+        angularDrag = rb2d.angularDrag;
+        animator = gameObject.GetComponent<Animator>();
+        material = rb2d.sharedMaterial;
+        friction = material.friction;
     }
 
     // Update is called once per frame
@@ -59,7 +63,7 @@ public class PlayerController : MonoBehaviour {
         isJumpPressing = Input.GetKey(jumpKey);
         isLeftPressing = Input.GetKey(leftKey);
         isRightPressing = Input.GetKey(rightKey);
-
+        
         // flip player when facing other direction
         transform.localScale = new Vector3(scaleX * (int)direction, scaleY);
         
@@ -79,7 +83,18 @@ public class PlayerController : MonoBehaviour {
 
         if (state == State.Jump && isOnGround)
             state = State.Idle;
-        
+
+        if (isOnGround)
+        {
+            material.friction = friction;
+            rb2d.sharedMaterial = material;
+        }
+        else
+        {
+            material.friction = 0;
+            rb2d.sharedMaterial = material;
+        }
+
         if (isJumpPressing)
         {
             if (isOnGround)
