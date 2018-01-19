@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,12 +10,20 @@ public class PlayerController : MonoBehaviour {
     public string rightKey = "right";
 
     public float jumpSpeed = 5f;
-    public float rotationSpeed = 4.2f;
+    public float rotationSpeed = 11f;
     public float acceleration = .05f;
     public float maxVelocityX = 4f;
     public float maxJumpVelocityX = 2.5f;
     public float maxVelocityY = 5f;
-    
+
+    /* for mass = 1
+    public float jumpSpeed = 5f;
+    public float rotationSpeed = 4.2f;
+    public float acceleration = .05f;
+    public float maxVelocityX = 4f;
+    public float maxJumpVelocityX = 2.5f;
+    public float maxVelocityY = 5f;*/
+
     Animator animator;
 
     public enum Direction
@@ -76,7 +85,7 @@ public class PlayerController : MonoBehaviour {
             Mathf.Sign(rb2d.velocity.y) * Mathf.Min(Mathf.Abs(rb2d.velocity.y), maxVelocityY));
 
         isOnGround = IsOnGround();
-        isAgainstSides = IsAgainstSides();
+        //isAgainstSides = IsAgainstSides();
         
         if (state == State.Idle && !isOnGround)
             state = State.Jump;
@@ -102,11 +111,12 @@ public class PlayerController : MonoBehaviour {
                 rb2d.velocity = new Vector2(rb2d.velocity.x, jumpSpeed);
             }
         }
-        
+
+        float rot = (float)(rotationSpeed + Convert.ToInt32(isOnGround) * rotationSpeed * .25);
+
         if (isLeftPressing)
-        {
-            //if (!isAgainstSides)
-            rb2d.AddTorque(rotationSpeed);
+        {            
+            rb2d.AddTorque(rot);
             if (rb2d.velocity.x < 0.1f) direction = Direction.Left;
 
             if (!isOnGround)
@@ -117,8 +127,7 @@ public class PlayerController : MonoBehaviour {
         }
         if (isRightPressing)
         {
-            //if (!isAgainstSides)
-            rb2d.AddTorque(-rotationSpeed);
+            rb2d.AddTorque(-rot);
             if (rb2d.velocity.x > 0.1f) direction = Direction.Right;
             if (!isOnGround)
             {

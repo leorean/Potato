@@ -6,7 +6,8 @@ using System.Linq;
 public class BallController : MonoBehaviour {
 
     List<SpriteRenderer> children;
-    
+    //public Color color;
+
     // Use this for initialization
     void Start () {
 
@@ -14,6 +15,7 @@ public class BallController : MonoBehaviour {
         foreach (var c in gameObject.GetComponentsInChildren<SpriteRenderer>())
         {
             children.Add(c);
+            //c.GetComponent<SpriteRenderer>().color = color;
         }
         children.Sort((p, q) => p.name.CompareTo(q.name));        
 	}
