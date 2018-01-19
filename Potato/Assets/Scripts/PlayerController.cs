@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour {
 
     public float jumpSpeed = 5f;
     public float rotationSpeed = 4.2f;
-    public float acceleration = .2f;
+    public float acceleration = .05f;
     public float maxVelocityX = 4f;
     public float maxJumpVelocityX = 2.5f;
     public float maxVelocityY = 5f;
@@ -132,8 +132,8 @@ public class PlayerController : MonoBehaviour {
                 h += Physics2D.Raycast(pcv2world, Vector2.left, cf, new RaycastHit2D[1], 0.1f);
                 h += Physics2D.Raycast(pcv2world, Vector2.right, cf, new RaycastHit2D[1], 0.1f);
             }
-            Debug.DrawRay(pcv2world, Vector2.left * 0.1f, color);
-            Debug.DrawRay(pcv2world, Vector2.right * 0.1f, color);
+            //Debug.DrawRay(pcv2world, Vector2.left * 0.1f, color);
+            //Debug.DrawRay(pcv2world, Vector2.right * 0.1f, color);
         }
         return h > 0;
     }
