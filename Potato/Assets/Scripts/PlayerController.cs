@@ -11,9 +11,9 @@ public class PlayerController : MonoBehaviour {
 
     public float jumpSpeed = 5f;
     public float rotationSpeed = 11f;
-    public float acceleration = .05f;
+    public float horizontalJumpAcceleration = .15f;
     public float maxVelocityX = 4f;
-    public float maxJumpVelocityX = 2.5f;
+    public float maxJumpVelocityX = 3f;
     public float maxVelocityY = 5f;
 
     /* for mass = 1
@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour {
     bool isRightPressing;
     bool isOnGround;
     bool isAgainstSides;
+    bool canJump;
 
     Rigidbody2D rb2d;
     PhysicsMaterial2D material;
@@ -86,6 +87,10 @@ public class PlayerController : MonoBehaviour {
 
         isOnGround = IsOnGround();
         //isAgainstSides = IsAgainstSides();
+        if (!canJump && isOnGround)
+            canJump = true;
+        if (rb2d.velocity.y < -2)
+            canJump = false;
         
         if (state == State.Idle && !isOnGround)
             state = State.Jump;
@@ -106,9 +111,10 @@ public class PlayerController : MonoBehaviour {
 
         if (isJumpPressing)
         {
-            if (isOnGround)
+            if (canJump)
             {
                 rb2d.velocity = new Vector2(rb2d.velocity.x, jumpSpeed);
+                canJump = false;
             }
         }
 
@@ -122,7 +128,7 @@ public class PlayerController : MonoBehaviour {
             if (!isOnGround)
             {
                 if (rb2d.velocity.x > -maxJumpVelocityX)
-                    rb2d.velocity = new Vector2(rb2d.velocity.x - acceleration, rb2d.velocity.y);
+                    rb2d.velocity = new Vector2(rb2d.velocity.x - horizontalJumpAcceleration, rb2d.velocity.y);
             }
         }
         if (isRightPressing)
@@ -132,7 +138,7 @@ public class PlayerController : MonoBehaviour {
             if (!isOnGround)
             {
                 if (rb2d.velocity.x < maxJumpVelocityX)                    
-                    rb2d.velocity = new Vector2(rb2d.velocity.x + acceleration, rb2d.velocity.y);
+                    rb2d.velocity = new Vector2(rb2d.velocity.x + horizontalJumpAcceleration, rb2d.velocity.y);
             }
         }
     }
