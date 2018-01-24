@@ -347,6 +347,7 @@
     <Compile Include="Assets\Scripts\BackgroundController.cs" />
     <Compile Include="Assets\Scripts\BallController.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
+    <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
   </ItemGroup>
   <ItemGroup>

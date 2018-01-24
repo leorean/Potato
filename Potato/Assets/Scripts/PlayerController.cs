@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour {
     public float maxVelocityX = 4f;
     public float maxJumpVelocityX = 3f;
     public float maxVelocityY = 5f;
+    public float friction = 0.5f;
 
     /* for mass = 1
     public float jumpSpeed = 5f;
@@ -49,8 +50,7 @@ public class PlayerController : MonoBehaviour {
     bool canJump;
 
     Rigidbody2D rb2d;
-    PhysicsMaterial2D material;
-    float friction;
+    PhysicsMaterial2D material;    
     float scaleX;
     float scaleY;
     float angularDrag;
@@ -63,8 +63,7 @@ public class PlayerController : MonoBehaviour {
         scaleY = transform.localScale.y;
         angularDrag = rb2d.angularDrag;
         animator = gameObject.GetComponent<Animator>();
-        material = rb2d.sharedMaterial;
-        friction = material.friction;
+        material = rb2d.sharedMaterial;        
     }
 
     // Update is called once per frame

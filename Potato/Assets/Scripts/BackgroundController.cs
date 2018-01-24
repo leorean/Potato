@@ -41,9 +41,17 @@ public class BackgroundController : MonoBehaviour {
         {
             sr.transform.localScale = new Vector3(1, 1, 1);
 
-            var width = sr.sprite.bounds.size.x;
-            var height = sr.sprite.bounds.size.y;
+
+
+            var width = sr.sprite.textureRect.width;
+            var height = sr.sprite.textureRect.height;
+            var sy = Camera.main.rect.height * Camera.main.orthographicSize * .5f;
+            var sx = sy / Camera.main.rect.width;
             
+
+            sr.transform.localScale = new Vector3(sx, sy);
+
+            /*
             var cam = GetComponentInParent(typeof(Cinemachine.CinemachineVirtualCamera)) as Cinemachine.CinemachineVirtualCamera;
             
             var worldScreenHeight = cam.m_Lens.OrthographicSize * 1.0;
@@ -52,12 +60,19 @@ public class BackgroundController : MonoBehaviour {
             sr.transform.localScale = new Vector3(
                 (float)worldScreenWidth / width,
                 (float)worldScreenHeight / height);
+            */
         }
     }
 
     // Update is called once per frame
     void Update () {
-		
+
+
+        var mod = Camera.main.ScreenToWorldPoint(spriteRendererFG.sprite.rect.size).x;
+
+        float newX = (transform.position.x *.5f);
+
+        spriteRendererFG.transform.position = new Vector3(newX, spriteRendererFG.transform.position.y);
 	}
 }
 
