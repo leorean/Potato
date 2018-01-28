@@ -9,7 +9,10 @@ public class BackgroundController : MonoBehaviour {
     public Sprite spriteFG;
     SpriteRenderer spriteRendererBG;
     SpriteRenderer spriteRendererFG;
-        
+
+    float newPos;
+    float oldPos;
+
     // Use this for initialization
     void Awake () {
 
@@ -67,12 +70,24 @@ public class BackgroundController : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
+        newPos = Camera.main.transform.position.x;
+        
+        float a = (newPos - oldPos) * .8f;
 
-        var mod = Camera.main.ScreenToWorldPoint(spriteRendererFG.sprite.rect.size).x;
+        spriteRendererFG.transform.position = new Vector3(a, spriteRendererFG.transform.position.y);
 
-        float newX = (transform.position.x *.5f);
+        oldPos = newPos;
 
-        spriteRendererFG.transform.position = new Vector3(newX, spriteRendererFG.transform.position.y);
+        /*var mod = Camera.main.ScreenToWorldPoint(spriteRendererFG.sprite.rect.size).x;
+
+        print("mod:" + mod);
+        var mod2 = Camera.main.WorldToScreenPoint(new Vector3(Camera.main.rect.width, 0)).x;
+        print("mod 2:" + mod2);
+
+        float newX = (transform.position.x * 1.5f) % mod2;
+        print(newX);
+        spriteRendererFG.transform.position = new Vector3(newX, spriteRendererFG.transform.position.y);*/
+        
 	}
 }
 

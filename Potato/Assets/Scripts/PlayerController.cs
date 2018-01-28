@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour {
     PhysicsMaterial2D material;    
     float scaleX;
     float scaleY;
-    float angularDrag;
+    //float angularDrag;
     
     // Use this for initialization
     void Start () {
@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour {
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         scaleX = transform.localScale.x;
         scaleY = transform.localScale.y;
-        angularDrag = rb2d.angularDrag;
+        //angularDrag = rb2d.angularDrag;
         animator = gameObject.GetComponent<Animator>();
         material = rb2d.sharedMaterial;        
     }
